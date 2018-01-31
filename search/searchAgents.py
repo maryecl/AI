@@ -296,7 +296,7 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         """((1,1), (1,top), (right, 1), (right, top))"""
-        return self.startingPosition,(False,False,False,False)
+        return [self.startingPosition,(False,False,False,False)]
         #util.raiseNotDefined()
 
     def isGoalState(self, state):
@@ -307,7 +307,6 @@ class CornersProblem(search.SearchProblem):
         coord = state[0]
         visitedCorners = list(state[1])
         return visitedCorners.count(True) == len(self.corners)
-        #util.raiseNotDefined()
 
     def getSuccessors(self, state):
         """
