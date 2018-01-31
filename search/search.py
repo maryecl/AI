@@ -94,14 +94,15 @@ def depthFirstSearch(problem):
         actualstate,path=stack.pop()#returns us the most upper node of the stack and after removes it
         if problem.isGoalState(actualstate):#we check if the state we are is the goal of the problem or not
                 return path#if we are in the last node-goal, we have to return the current path, what we've made to come
+        if actualstate in visited:
+            continue
+        visited.append(actualstate)
         for successors in problem.getSuccessors(actualstate):#we are in actual node, which has some adjacent nodes to him
-            actualstate = successors[0] #the actual node, where we are now
-            direction = successors[1]#the adjacent node to the actual node, the node where we have to go next
-            if actualstate not in visited:#we check if the node we are, is already visited or not
+            newstate = successors[0] #the actual node, where we are now
+            newpath = successors[1]#the adjacent node to the actual node, the node where we have to go next
+            if newstate not in visited:#we check if the node we are, is already visited or not
             #if not we have to add visited nodes to our list,and to the stack
-                stack.push( (actualstate, path + [direction]) )
-                visited.append(actualstate)
-    util.raiseNotDefined()
+                stack.push( (newstate, path + [newpath]) )
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -113,13 +114,14 @@ def breadthFirstSearch(problem):
         actualstate, path = queue.pop()#we we take the last item in the list and after that we remove it
         if problem.isGoalState(actualstate):#and if this state is the goal
             return path #we just return this state as the finished path
+        if actualstate in visited:
+            continue
+        visited.append(actualstate)
         for successors in problem.getSuccessors(actualstate):
-            actualstate = successors[0]#we don't move anyway, we are in the position of actualstate
-            direction = successors[1]#our adjacent node in in lenght 1 from actualstate
-            if actualstate not in visited:#if the node where we are is not in the visited list
-                queue.push( (actualstate, path + [direction]) )#if this state is not the goal, we add this node to the queue
-                visited.append(actualstate)#and also we add this node to the list of visited
-    util.raiseNotDefined()
+            newstate = successors[0]#we don't move anyway, we are in the position of actualstate
+            newpath = successors[1]#our adjacent node in in lenght 1 from actualstate
+            if newstate not in visited:#if the node where we are is not in the visited list
+                queue.push( (newstate, path + [newpath]) )#if this state is not the goal, we add this node to the queue
 
 def uniformCostSearch(problem):#DIJKSTRA
     """Search the node of least total cost first."""
@@ -132,13 +134,16 @@ def uniformCostSearch(problem):#DIJKSTRA
     while not queue.isEmpty():#while the queue in not empty
         actualstate, path, actualcost = queue.pop()#now we are working with three attributes,
                                                 #such as the actual node, the path what we made and how much this path costs
+        if actualstate in visited:
+            continue
+        visited.append(actualstate)
         if problem.isGoalState(actualstate):#we compare if the actualstate is our goal
             return path#if it is we just return the path that we used to arrive
         for state, direction, cost in problem.getSuccessors(actualstate):#we have three parametres that we have to have in mind
             if state not in visited:#is the state not in visited we have to add it
                 queue.push((state, path + [direction], actualcost + cost), actualcost + cost)#we add the node to the queue
                 #here in cost we acummulate the previous cost and the newest one
-                visited.append(state)#we add the node to the visited list
+
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
@@ -160,13 +165,15 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     while not queue.isEmpty():#while the queue is not empty
         actualstate, path, actualcost = queue.pop()#now we are working with three attributes,
                                                 #such as the actual node, the path what we made and how much this path costs
+        if actualstate in visited:
+            continue
+        visited.append(actualstate)
         if problem.isGoalState(actualstate):#we compare if the actualstate is our goal
             return path#if it is we just return the path that we used to arrive
         for state, direction, cost in problem.getSuccessors(actualstate):#for loop to "recorrer" the three parametres we have
             if state not in visited:#if the node we are is no in viisted, we visit it
                 heuristicCost = heuristic(state, problem)#we add the heuristic cost
-                queue.push((state, path + [direction], actualcost + cost), actualcost + cost)#we add the non viisted node to the queue with acumulated cost if it is needed
-                visited.append(state)#also we add the node to the visited list
+                queue.push((state, path + [direction], actualcost + cost ), actualcost + cost+heuristicCost )#we add the non viisted node to the queue with acumulated cost if it is needed
     util.raiseNotDefined()
 
 
