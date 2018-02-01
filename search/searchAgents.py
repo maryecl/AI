@@ -296,16 +296,14 @@ class CornersProblem(search.SearchProblem):
         """
         "*** YOUR CODE HERE ***"
         """((1,1), (1,top), (right, 1), (right, top))"""
-        return [self.startingPosition,(False,False,False,False)]
-        #util.raiseNotDefined()
+        return [self.startingPosition,[False,False,False,False]]#I dont want them to be on the corners
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        coord = state[0]
-        visitedCorners = list(state[1])
+        visitedCorners = state[1]
         return visitedCorners.count(True) == len(self.corners)
 
     def getSuccessors(self, state):
@@ -319,7 +317,7 @@ class CornersProblem(search.SearchProblem):
             is the incremental cost of expanding to that successor
         """
 
-        successors = []
+        successors = []# we create an empty list of successors
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -327,20 +325,19 @@ class CornersProblem(search.SearchProblem):
             #   dx, dy = Actions.directionToVector(action)
             #   nextx, nexty = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextx][nexty]
-            x, y = state[0]
+            x, y = state[0] #actual position
             visitedCorners = state[1]
             cost = 1
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
             if not hitsWall:
-                successorVisitedCorners = list(visitedCorners)
-                nextNode = (nextx, nexty)
-                idx = self.corners.index(nextNode) if nextNode in self.corners else None
-                if idx >= 0 and not successorVisitedCorners[idx]:
-                    successorVisitedCorners[idx] = True
-                nextState = nextNode, tuple(successorVisitedCorners)
-                successors.append((nextState, action, cost))
+                nextNode=(nextx,nexty)
+                for i in range(4):
+                    if self.corners[i]==nextNode:
+                        visitedCorners[i]=True
+                nextState=[nextNode,visitedCorners]
+                successors.append((nextState,action,cost))
             "*** YOUR CODE HERE ***"
 
         self._expanded += 1 # DO NOT CHANGE

@@ -90,18 +90,18 @@ def depthFirstSearch(problem):
     stack = util.Stack() # we create a Stack, empty
     visited =[] # a list for visited nodes
     stack.push((problem.getStartState(),[]))#here we add first/start node to Stack
-    while not stack.isEmpty():#while our stack is not empty, we have to delete/pop all nodes
-        actualstate,path=stack.pop()#returns us the most upper node of the stack and after removes it
+    while not stack.isEmpty():#while our stack is not empty
+        actualstate,path=stack.pop()#returns us the most upper node of the stack and removes it
         if problem.isGoalState(actualstate):#we check if the state we are is the goal of the problem or not
-                return path#if we are in the last node-goal, we have to return the current path, what we've made to come
-        if actualstate in visited:
+                return path#if the node is the goal, then we return the path to get to that node
+        if actualstate in visited:#if not the goal and is already visited, we continue and
             continue
         visited.append(actualstate)
         for successors in problem.getSuccessors(actualstate):#we are in actual node, which has some adjacent nodes to him
-            newstate = successors[0] #the actual node, where we are now
-            newpath = successors[1]#the adjacent node to the actual node, the node where we have to go next
-            if newstate not in visited:#we check if the node we are, is already visited or not
-            #if not we have to add visited nodes to our list,and to the stack
+            newstate = successors[0] #the actual node
+            newpath = successors[1]#the new path to get to the newnode
+            if newstate not in visited:#we check if the current node has been visited or not
+            #if not visited, we add the currentnode to the stack
                 stack.push( (newstate, path + [newpath]) )
 
 def breadthFirstSearch(problem):
@@ -111,17 +111,19 @@ def breadthFirstSearch(problem):
     visited =[]#empty list
     queue.push((problem.getStartState(),[]))#we add first node to the queue
     while not queue.isEmpty():#while the queue is not empty
-        actualstate, path = queue.pop()#we we take the last item in the list and after that we remove it
+        actualstate, path = queue.pop()#we take the last item in the list and after that we remove it
+        print(actualstate, path)
         if problem.isGoalState(actualstate):#and if this state is the goal
-            return path #we just return this state as the finished path
-        if actualstate in visited:
+            print(path)
+            return path #we return the path to this node
+        if actualstate in visited: #if this node has been visited, then we continue
             continue
         visited.append(actualstate)
-        for successors in problem.getSuccessors(actualstate):
-            newstate = successors[0]#we don't move anyway, we are in the position of actualstate
-            newpath = successors[1]#our adjacent node in in lenght 1 from actualstate
-            if newstate not in visited:#if the node where we are is not in the visited list
-                queue.push( (newstate, path + [newpath]) )#if this state is not the goal, we add this node to the queue
+        for successor in problem.getSuccessors(actualstate): #we get the successors of the currentnode and iterate them
+            newstate = successor[0]#new state
+            newpath = successor[1]# the path to this new state
+            if newstate not in visited:#if this current node has not been visited, we push it to the queue
+                queue.push( (newstate, path + [newpath]) )
 
 def uniformCostSearch(problem):#DIJKSTRA
     """Search the node of least total cost first."""
@@ -133,18 +135,16 @@ def uniformCostSearch(problem):#DIJKSTRA
     queue.push((problem.getStartState(), [], 0), 0)#we add first/start node
     while not queue.isEmpty():#while the queue in not empty
         actualstate, path, actualcost = queue.pop()#now we are working with three attributes,
-                                                #such as the actual node, the path what we made and how much this path costs
-        if actualstate in visited:
+        #such as the actual node, the path we take and how much this path costs
+        if problem.isGoalState(actualstate):#we compare if the actualstate is our goal
+            return path#if it is the goal, return the path to that node
+        if actualstate in visited:#if node in visited, we continue
             continue
         visited.append(actualstate)
-        if problem.isGoalState(actualstate):#we compare if the actualstate is our goal
-            return path#if it is we just return the path that we used to arrive
-        for state, direction, cost in problem.getSuccessors(actualstate):#we have three parametres that we have to have in mind
+        for state, newpath, cost in problem.getSuccessors(actualstate):#we have three parametres that we have to take into account
             if state not in visited:#is the state not in visited we have to add it
-                queue.push((state, path + [direction], actualcost + cost), actualcost + cost)#we add the node to the queue
+                queue.push((state, path + [newpath], actualcost + cost), actualcost + cost)#we add the node to the queue
                 #here in cost we acummulate the previous cost and the newest one
-
-    util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
@@ -158,23 +158,22 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     "*** YOUR CODE HERE ***"
 
     """f(n)=g(n)+h(n)"""
-    #We create a PriorityQueue to compare different costs, then we create a list for viisted nodes
-    queue = util.PriorityQueue()
-    visited = []
+
+    queue = util.PriorityQueue()#We create a PriorityQueue to compare different costs
+    visited = []#then we create an empty list for visited nodes
     queue.push((problem.getStartState(), [], 0), 0)#we add start node to que queue
     while not queue.isEmpty():#while the queue is not empty
         actualstate, path, actualcost = queue.pop()#now we are working with three attributes,
-                                                #such as the actual node, the path what we made and how much this path costs
+        #such as the actual node, the path what we made and how much this path costs
+        if problem.isGoalState(actualstate):#we compare if the actualstate is our goal
+            return path#if it is,  we return the path that we used to arrive
         if actualstate in visited:
             continue
         visited.append(actualstate)
-        if problem.isGoalState(actualstate):#we compare if the actualstate is our goal
-            return path#if it is we just return the path that we used to arrive
-        for state, direction, cost in problem.getSuccessors(actualstate):#for loop to "recorrer" the three parametres we have
-            if state not in visited:#if the node we are is no in viisted, we visit it
+        for state, direction, cost in problem.getSuccessors(actualstate):#for loop to iterate the three parametres that we have
+            if state not in visited:#if the node we are is no in visited
                 heuristicCost = heuristic(state, problem)#we add the heuristic cost
                 queue.push((state, path + [direction], actualcost + cost ), actualcost + cost+heuristicCost )#we add the non viisted node to the queue with acumulated cost if it is needed
-    util.raiseNotDefined()
 
 
 # Abbreviations
