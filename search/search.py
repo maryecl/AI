@@ -112,9 +112,7 @@ def breadthFirstSearch(problem):
     queue.push((problem.getStartState(),[]))#we add first node to the queue
     while not queue.isEmpty():#while the queue is not empty
         actualstate, path = queue.pop()#we take the last item in the list and after that we remove it
-        print(actualstate, path)
         if problem.isGoalState(actualstate):#and if this state is the goal
-            print(path)
             return path #we return the path to this node
         if actualstate in visited: #if this node has been visited, then we continue
             continue

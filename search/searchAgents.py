@@ -326,7 +326,7 @@ class CornersProblem(search.SearchProblem):
             #   nextx, nexty = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextx][nexty]
             x, y = state[0] #actual position
-            visitedCorners = state[1]
+            visitedCorners = state[1][:] #hacer copia de la tupla, no copiar referencia!
             cost = 1
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
@@ -374,9 +374,20 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    visitedCorners = list(state[1])
-    heuristicCount = visitedCorners.count(False)
-    return heuristicCount * walls.height * walls.height
+    x, y = state[0]
+    corners = state[1]
+
+    dist = 100000000
+    for i in range(4):
+        if not corners[i]:
+            corner = problem.corners[i]
+            d = abs(corner[0]-x) + abs(corner[1]-y)
+            if d < dist:
+                dist = d
+    if dist == 100000000:
+        dist = 0
+
+    return dist
     #return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
