@@ -112,7 +112,7 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         #We iterate thru all the possible actions of a state, evaluate the Qvalue of each of them
         #Choose the one with better policy, meaning we get the one with the best Qvalue, the one that leads us a reward!
-        '''
+        
 
         possible_actions = self.mdp.getPossibleActions(state)
         values_actions = util.Counter()
@@ -136,7 +136,7 @@ class ValueIterationAgent(ValueEstimationAgent):
             maxaction = action 
         return maxaction
         
-
+  '''
         util.raiseNotDefined()
 
     def getPolicy(self, state):
