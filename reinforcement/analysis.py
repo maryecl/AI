@@ -68,6 +68,8 @@ def question3d():
 
 def question3e():
     #We want to avoid everything 
+    #dont really care of the value of reward
+    #half the time the agent will get to somewhere it did not intend to 
     answerDiscount = 0.3
     answerNoise = 0.5
     answerLivingReward = 10

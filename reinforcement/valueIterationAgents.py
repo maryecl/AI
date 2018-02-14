@@ -107,7 +107,6 @@ class ValueIterationAgent(ValueEstimationAgent):
         "*** YOUR CODE HERE ***"
 
         #If my current state and nextState are the same, we are in the terminal, so there are no more actions
-        
         if self.mdp.isTerminal(state):
           return None 
 
@@ -123,7 +122,21 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         return values_actions.argMax();
 
+        '''
+        if self.mdp.isTerminal(state):
+          return None 
 
+        possible_actions = self.mdp.getPossibleActions(state)
+        value = None
+        maxaction = None
+        for action in possible_actions:
+          actionValue = self.computeQValueFromValues(state,action)
+          if value == None or actionValue > value:
+            value = actionValue
+            maxaction = action 
+        return maxaction
+        
+  '''
         util.raiseNotDefined()
 
     def getPolicy(self, state):

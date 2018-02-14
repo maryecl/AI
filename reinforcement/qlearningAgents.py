@@ -42,7 +42,10 @@ class QLearningAgent(ReinforcementAgent):
         "You can initialize Q-values here..."
         ReinforcementAgent.__init__(self, **args)
 
-        "*** YOUR CODE HERE ***                   LAST MOTHERFUCKING STEP "
+        "*** YOUR CODE HERE *** " 
+
+        self.Qvalues = util.Counter()
+
 
     def getQValue(self, state, action):
         """
@@ -50,8 +53,9 @@ class QLearningAgent(ReinforcementAgent):
           Should return 0.0 if we have never seen a state
           or the Q node value otherwise
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        if (state,action) not in self.Qvalues:
+          self.Qvalues[(state,action)] = 0.0
+        return self.Qvalues[(state,action)]
 
 
     def computeValueFromQValues(self, state):
@@ -61,48 +65,19 @@ class QLearningAgent(ReinforcementAgent):
           there are no legal actions, which is the case at the
           terminal state, you should return a value of 0.0.
 
-          THEORY FOR MOI
-          While a ValueIterationAgent has
-          a model of the environment via a MarkovDecisionProcess
-          (see mdp.py) that is used to estimate Q-Values before
-          ever actually acting
-
-          Q(state,action) = R(state,action)+ Gamma * Max[Q(next state, all actions)]
-
-           R= reward table (matrix)
-           Q=matrix that represents the memory of what the agent has learnes through experience.
-            -> the ROWS  of the Q matrix  represent the current state 
-            -> the COLS represent possible actions leading to the next state 
-          Initially the Q matrix is ZERO.
-
-          A value assgined to a specific element in Q, is equal to the sum of the corresponding value in matrix R
-          an the learning parameter Gamma, multiplied by the maximum value of Q for all possible actions in the next state 
-
-          La suma es lo que me vale llegar de donde estoy a mi objt y luego la multilicaion y suma es lo que valdrian los siguiente pasos para llegar al goal.
-
-          STEPS of the Q-learning alforithm:
-            1.Initialize matrix Q to 0 -> meaning value = 0
-            2.Get the transition table 
-            3.For each episode: (each exploration, each time the agent explores to learn the map)
-              3.1.Select a random initial state
-              3.2.Do while the goal has not been reached. (explore until we find a way to get there)
-                Select one among all the possible actions for the current state
-                Using THIS chosen possible action, go to the next state
-                Calculate the Q-value from this state (FORMULA)
-                SET nextstate as CURRENT 
-            end for 
-          The algorithm tries to find the highest reward values recorded in the matrix for the current state 
-            1.Set current state =initial state
-            2.from current state, find the actual with the highest Q value.
-            3.set current state= next state.
-            4. repeat until current state 0 goal state
-
         """
         "*** YOUR CODE HERE ***"
+        legal_actions = self.getLegalActions(state)
+        if len(legal_actions)==0:
+          return 0.0
+        actionsl = util.Counter()
+        for action in legal_actions:
 
+          actionsl[action]= self.getQValue(state,action)
+
+        return actionsl[actionsl.argMax()]
       
 
-        util.raiseNotDefined()
 
     def computeActionFromQValues(self, state):
         """
@@ -112,10 +87,15 @@ class QLearningAgent(ReinforcementAgent):
         """
         "*** YOUR CODE HERE ***"
 
+        legal_actions = self.getLegalActions(state)
 
+        if not len(legal_actions):
+          return None 
+        legalaction=util.Counter()
+        for action in legal_actions:
+          legalaction[action] = self.getQValue(state,action)
+        return legalaction.argMax()
 
-
-        util.raiseNotDefined()
 
     def getAction(self, state):
         """
@@ -129,12 +109,16 @@ class QLearningAgent(ReinforcementAgent):
           HINT: To pick randomly from a list, use random.choice(list)
         """
         # Pick Action
-        legalActions = self.getLegalActions(state)
+        legal_actions = self.getLegalActions(state)
         action = None
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
-
+        if not len(legal_actions):
+          return None
+        if util.flipCoin(self.epsilon):
+          action = random.choice(legal_actions)
+        else:
+          action = self.getPolicy(state)
         return action
+
 
     def update(self, state, action, nextState, reward):
         """
@@ -145,8 +129,12 @@ class QLearningAgent(ReinforcementAgent):
           NOTE: You should never call this function,
           it will be called on your behalf
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        #self.Qvalues[] = ((1-self.alpha) * self.getQValue(state,action)) + (self.alpha * (reward + self.discount *(self.getQValue(nextState))))
+
+
+        self.Qvalues[(state,action)] =  ((1-self.alpha) * self.getQValue(state,action)) + self.alpha * (reward + self.discount * self.computeValueFromQValues(nextState))
+
 
     def getPolicy(self, state):
         return self.computeActionFromQValues(state)
@@ -214,9 +202,11 @@ class ApproximateQAgent(PacmanQAgent):
     def update(self, state, action, nextState, reward):
         """
            Should update your weights based on transition
+
         """
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()
+        
 
     def final(self, state):
         "Called at the end of each game."
