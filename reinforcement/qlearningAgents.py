@@ -42,7 +42,7 @@ class QLearningAgent(ReinforcementAgent):
         "You can initialize Q-values here..."
         ReinforcementAgent.__init__(self, **args)
 
-        "*** YOUR CODE HERE ***"
+        "*** YOUR CODE HERE ***                   LAST MOTHERFUCKING STEP "
 
     def getQValue(self, state, action):
         """
@@ -60,8 +60,48 @@ class QLearningAgent(ReinforcementAgent):
           where the max is over legal actions.  Note that if
           there are no legal actions, which is the case at the
           terminal state, you should return a value of 0.0.
+
+          THEORY FOR MOI
+          While a ValueIterationAgent has
+          a model of the environment via a MarkovDecisionProcess
+          (see mdp.py) that is used to estimate Q-Values before
+          ever actually acting
+
+          Q(state,action) = R(state,action)+ Gamma * Max[Q(next state, all actions)]
+
+           R= reward table (matrix)
+           Q=matrix that represents the memory of what the agent has learnes through experience.
+            -> the ROWS  of the Q matrix  represent the current state 
+            -> the COLS represent possible actions leading to the next state 
+          Initially the Q matrix is ZERO.
+
+          A value assgined to a specific element in Q, is equal to the sum of the corresponding value in matrix R
+          an the learning parameter Gamma, multiplied by the maximum value of Q for all possible actions in the next state 
+
+          La suma es lo que me vale llegar de donde estoy a mi objt y luego la multilicaion y suma es lo que valdrian los siguiente pasos para llegar al goal.
+
+          STEPS of the Q-learning alforithm:
+            1.Initialize matrix Q to 0 -> meaning value = 0
+            2.Get the transition table 
+            3.For each episode: (each exploration, each time the agent explores to learn the map)
+              3.1.Select a random initial state
+              3.2.Do while the goal has not been reached. (explore until we find a way to get there)
+                Select one among all the possible actions for the current state
+                Using THIS chosen possible action, go to the next state
+                Calculate the Q-value from this state (FORMULA)
+                SET nextstate as CURRENT 
+            end for 
+          The algorithm tries to find the highest reward values recorded in the matrix for the current state 
+            1.Set current state =initial state
+            2.from current state, find the actual with the highest Q value.
+            3.set current state= next state.
+            4. repeat until current state 0 goal state
+
         """
         "*** YOUR CODE HERE ***"
+
+      
+
         util.raiseNotDefined()
 
     def computeActionFromQValues(self, state):
@@ -71,6 +111,10 @@ class QLearningAgent(ReinforcementAgent):
           you should return None.
         """
         "*** YOUR CODE HERE ***"
+
+
+
+
         util.raiseNotDefined()
 
     def getAction(self, state):

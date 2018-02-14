@@ -20,8 +20,15 @@
 # value iteration.
 
 def question2():
+    #the discount factor determines the importance of future rewards 
+    #a gamma = 0 will only care of the current reward
+    #while a gamma approaching 1 cares about long term reward 
+    #In this case as the values we have are negative, we need the agent to not care at all 
+    #about taking the desicion of moving, so it will only go cheking the curren place 
+
     answerDiscount = 0.9
-    answerNoise = 0.2
+    answerNoise = 0.0
+    
     return answerDiscount, answerNoise
 
 def question3a():
