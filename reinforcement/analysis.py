@@ -23,46 +23,54 @@ def question2():
     #the discount factor determines the importance of future rewards 
     #a gamma = 0 will only care of the current reward
     #while a gamma approaching 1 cares about long term reward 
-    #In this case as the values we have are negative, we need the agent to not care at all 
-    #about taking the desicion of moving, so it will only go cheking the curren place 
+
+    #We reduce the answerNoise because we want to eliminate the probability of the agent going other way other than the bridge.
+    #we leave the gamma high because we are looking toward the long term reward that is 10
 
     answerDiscount = 0.9
-    answerNoise = 0.0
-    
+    answerNoise = 0.00
+
     return answerDiscount, answerNoise
 
 def question3a():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    #not the safest way to a reward, but the fastest
+    answerDiscount = 0.1
+    answerNoise = 0.0
+    answerLivingReward = 0.0
     return answerDiscount, answerNoise, answerLivingReward
-    # If not possible, return 'NOT POSSIBLE'
+    #If not possible:return 'NOT POSSIBLE'
 
 def question3b():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    #In here we still want the closest reward, but going the way that cannot have a negative reward
+    answerDiscount = 0.1
+    answerNoise = 0.1
+    answerLivingReward = 0.1
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3c():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    #We want to prioritize getting to the 10 value reward, so we have to augment the gamma
+    #And we dont bother much about the risk of a negative reward 
+    answerDiscount = 0.8
+    answerNoise = 0.0
+    answerLivingReward = 0.0
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3d():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    #We still prefer the 10 value reward, so the gamma stays big
+    #But now we want to go the safest way 
+    answerDiscount = 0.8
+    answerNoise = 0.2
+    answerLivingReward = 0.2
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
 def question3e():
-    answerDiscount = None
-    answerNoise = None
-    answerLivingReward = None
+    #We want to avoid everything 
+    answerDiscount = 0.3
+    answerNoise = 0.5
+    answerLivingReward = 10
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
