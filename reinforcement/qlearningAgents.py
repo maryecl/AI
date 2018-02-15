@@ -80,39 +80,45 @@ class QLearningAgent(ReinforcementAgent):
 
 
     def computeActionFromQValues(self, state):
-        """
-          Compute the best action to take in a state.  Note that if there
-          are no legal actions, which is the case at the terminal state,
-          you should return None.
-        """
-        "*** YOUR CODE HERE ***"
+  
 
+        #We obtain  the legal actions available from our current state  
         legal_actions = self.getLegalActions(state)
 
+        #If there are no legal actions, it means we are at the terminal state
         if not len(legal_actions):
           return None 
+
+        #We inicialize a legalaction list to default 0
         legalaction=util.Counter()
+
+        #For each action of the list of legal action, we compute its Qvalue
+        #we add it to our previously declared legalaction, and from that list we get the Max value
+        #Meaning we choose to return the best action 
+
+
         for action in legal_actions:
           legalaction[action] = self.getQValue(state,action)
         return legalaction.argMax()
 
 
     def getAction(self, state):
-        """
-          Compute the action to take in the current state.  With
-          probability self.epsilon, we should take a random action and
-          take the best policy action otherwise.  Note that if there are
-          no legal actions, which is the case at the terminal state, you
-          should choose None as the action.
-
-          HINT: You might want to use util.flipCoin(prob)
-          HINT: To pick randomly from a list, use random.choice(list)
-        """
-        # Pick Action
+      
+      
+        #We obtain  the legal actions available from our current state  
         legal_actions = self.getLegalActions(state)
+
+        #We declare a variable action
         action = None
+
+        #If there are no legal actions, it means we are at the terminal state
         if not len(legal_actions):
           return None
+
+        #In here we evaluate or exploration probability
+        #If a random prob < exploration prob, then we take a random action
+        #Otherwise we take the best policy already available
+
         if util.flipCoin(self.epsilon):
           action = random.choice(legal_actions)
         else:
@@ -129,9 +135,6 @@ class QLearningAgent(ReinforcementAgent):
           NOTE: You should never call this function,
           it will be called on your behalf
         """
-
-        #self.Qvalues[] = ((1-self.alpha) * self.getQValue(state,action)) + (self.alpha * (reward + self.discount *(self.getQValue(nextState))))
-
 
         self.Qvalues[(state,action)] =  ((1-self.alpha) * self.getQValue(state,action)) + self.alpha * (reward + self.discount * self.computeValueFromQValues(nextState))
 

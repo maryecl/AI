@@ -43,9 +43,14 @@ class ValueIterationAgent(ValueEstimationAgent):
         self.iterations = iterations
         self.values = util.Counter() # A Counter is a dict with default 0
 
-        # Write value iteration code here
-        "*** YOUR CODE HERE ***"
 
+
+        #For each iteration, meaning  each exploration 
+        #We will iterate thru the possible next states from our current state
+        #Anf thru the possible Actions that we can take to get to this possible next states 
+        #All this evaluation the Qvalue of each of them taking into account the transition functions
+        #Once we compute the Qvalue of each action for a given state -> next state, we evaluate if its the best one 
+        #So we will go exploring and choosing the best possible action to make from one state to another
 
         for i in range(self.iterations):
           action_values = util.Counter()
@@ -60,16 +65,7 @@ class ValueIterationAgent(ValueEstimationAgent):
             action_values[state]=finalvalue
 
           self.values = action_values 
-              #values_actions[action] = actionValue
-
-
-
-              #values_actions[action] = actionValue
-           # maxvalue = values_actions.argMax()
-          #self.values[state] = values_actions[values_actions.argMax()]
-            #values[state] = values_actions.argMax()
-
-
+    
 
 
     def getValue(self, state):
@@ -96,15 +92,7 @@ class ValueIterationAgent(ValueEstimationAgent):
 
 
     def computeActionFromValues(self, state):
-        """
-          The policy is the best action in the given state
-          according to the values currently stored in self.values.
-
-          You may break ties any way you see fit.  Note that if
-          there are no legal actions, which is the case at the
-          terminal state, you should return None.
-        """
-        "*** YOUR CODE HERE ***"
+    
 
         #If my current state and nextState are the same, we are in the terminal, so there are no more actions
         if self.mdp.isTerminal(state):
@@ -122,22 +110,7 @@ class ValueIterationAgent(ValueEstimationAgent):
 
         return values_actions.argMax();
 
-        '''
-        if self.mdp.isTerminal(state):
-          return None 
 
-        possible_actions = self.mdp.getPossibleActions(state)
-        value = None
-        maxaction = None
-        for action in possible_actions:
-          actionValue = self.computeQValueFromValues(state,action)
-          if value == None or actionValue > value:
-            value = actionValue
-            maxaction = action 
-        return maxaction
-        
-  '''
-        util.raiseNotDefined()
 
     def getPolicy(self, state):
         return self.computeActionFromValues(state)
