@@ -42,9 +42,9 @@ def question3a():
 
 def question3b():
     #In here we still want the closest reward, but going the way that cannot have a negative reward
-    answerDiscount = 0.1
-    answerNoise = 0.1
-    answerLivingReward = 0.1
+    answerDiscount = 0.2
+    answerNoise = 0.2
+    answerLivingReward = 0.0
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
@@ -62,7 +62,7 @@ def question3d():
     #But now we want to go the safest way 
     answerDiscount = 0.8
     answerNoise = 0.2
-    answerLivingReward = 0.2
+    answerLivingReward = 0.0
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
@@ -70,9 +70,9 @@ def question3e():
     #We want to avoid everything 
     #dont really care of the value of reward
     #half the time the agent will get to somewhere it did not intend to 
-    answerDiscount = 0.3
-    answerNoise = 0.5
-    answerLivingReward = 10
+    answerDiscount = 1
+    answerNoise = 0.0
+    answerLivingReward = 1
     return answerDiscount, answerNoise, answerLivingReward
     # If not possible, return 'NOT POSSIBLE'
 
