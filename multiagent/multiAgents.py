@@ -148,6 +148,7 @@ class MinimaxAgent(MultiAgentSearchAgent):
     def getAction(self, gameState):
       
       action, value = self.maximizer(gameState, self.depth)
+
       return action
 
 
@@ -164,8 +165,8 @@ class MinimaxAgent(MultiAgentSearchAgent):
       for action in gameState.getLegalActions(0):
           v = self.minimizer(gameState.generateSuccessor(0,action), depth, 1)
           if v > value:
-            value = v
-            best = action
+              value = v
+              best = action
       return best, value  
 
 
@@ -180,16 +181,13 @@ class MinimaxAgent(MultiAgentSearchAgent):
 
       for action in gameState.getLegalActions(ghost):
         if ghost == gameState.getNumAgents()-1:
-          v = self.maximizer(gameState.generateSuccessor(ghost,action), depth - 1)
+            v = self.maximizer(gameState.generateSuccessor(ghost,action), depth - 1)
         else:
-          v = self.minimizer(gameState.generateSuccessor(ghost,action), depth, ghost + 1)
+            v = self.minimizer(gameState.generateSuccessor(ghost,action), depth, ghost + 1)
         if v < value:
             best = action 
             value = v
-      return best, v
-
-
-
+      return best, value
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -201,8 +199,52 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
         """
           Returns the minimax action using self.depth and self.evaluationFunction
         """
-        "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+      action, value = self.maximizer(gameState, self.depth, -(float("inf")), float("inf"))
+
+      return action
+
+
+    def maximizer(self,gameState,depth, alpha, betha):
+
+      # Either if we have won, lost, then we return the score 
+      if gameState.isWin() or gameState.isLose():
+        return self.evaluationFunction(gameState)
+
+      #Our initial worst  worst maximum value is -infinity
+      value = -float("inf")
+
+      for action in gameState.getLegalActions(0):
+          v = self.minimizer(gameState.generateSuccessor(0,action), depth, 1, alpha, betha)
+          if v > value:
+              value = v
+              best = action
+          if value > betha:
+              break
+          alpha = max(alpha, value)
+      return best, value 
+
+    def minimizer(self, gameState, depth, ghost, alpha, betha):
+
+      # Either if we have won, lost, then we return the score 
+      if gameState.isWin() or gameState.isLose():
+        return self.evaluationFunction(gameState)
+
+      #Our initial worst  worst minimum value is +infinity
+      value = float("inf")
+
+      for action in gameState.getLegalActions(ghost):
+        if ghost == gameState.getNumAgents()-1:
+            v = self.maximizer(gameState.generateSuccessor(ghost,action), depth - 1, alpha, betha)
+        else:
+            v = self.minimizer(gameState.generateSuccessor(ghost,action), depth, ghost + 1, alpha, betha)
+        if v < value:
+            best = action 
+            value = v
+        if value < alpha:
+            break
+        betha = min(betha, value)
+
+      return best, value
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
