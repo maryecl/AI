@@ -92,11 +92,14 @@ class ReflexAgent(Agent):
 
         food = newFood.asList()
         foodDist = float("inf") 
+
+
+        #For each food we compute the distance from our New position to the food 
         for f in food:
           dist = util.manhattanDistance(f, newPos)
           if dist < foodDist:
             foodDist = dist
-        score -=  3 * foodDist      # given that, as we move we substract points, its better if we are near the food 
+        score -=  3 * foodDist  #given that, as we move we substract points, its better if we are near the food 
 
         #When pacman eats a Capsule, it get an positive addition to the score 
         capsulePos = currentGameState.getCapsules()
@@ -142,52 +145,66 @@ class MultiAgentSearchAgent(Agent):
 
 class MinimaxAgent(MultiAgentSearchAgent):
     """
-      Your minimax agent (question 2)
+      Your expectimax agent (question 4)
     """
 
     def getAction(self, gameState):
-      
-      action, value = self.maximizer(gameState, self.depth)
+        """
+          Returns the expectimax action using self.depth and self.evaluationFunction
 
-      return action
+          All ghosts should be modeled as choosing uniformly at random from their
+          legal moves.
+        """
+        action, value = self.maximizer(gameState, self.depth)
 
-
+        return action 
 
     def maximizer(self,gameState,depth):
 
-      # Either if we have won, lost, then we return the score 
-      if gameState.isWin() or gameState.isLose():
-        return self.evaluationFunction(gameState)
+      # Either if we have won, lost, then we return the score, or we are in the very beggining
+        if gameState.isWin() or gameState.isLose() or depth==0:
+          return None, self.evaluationFunction(gameState)
 
-      #Our initial worst  worst maximum value is -infinity
-      value = -float("inf")
+        #Our initial worst  worst maximum value is -infinity or a really small value
+        value = -100000000
 
-      for action in gameState.getLegalActions(0):
-          v = self.minimizer(gameState.generateSuccessor(0,action), depth, 1)
+      # For each action in the legalActions from our gameState 
+      # We search for the action that maximizes the score from our pacman
+      # For each action we call the minimizer function with its successors and depth correspondent
+
+        for action in gameState.getLegalActions(0):
+          a,v = self.minimizer(gameState.generateSuccessor(0,action), depth, 1)
           if v > value:
+              baction = action
               value = v
-              best = action
-      return best, value  
+        return baction, value
 
 
-    def minimizer(self, gameState, depth, ghost):
 
-      # Either if we have won, lost, then we return the score 
-      if gameState.isWin() or gameState.isLose():
-        return self.evaluationFunction(gameState)
+    def minimizer(self, gameState,depth, ghost):
 
-      #Our initial worst  worst minimum value is +infinity
-      value = float("inf")
+      # Either if we have won, lost, then we return the score, or we are in the very beggining
+        if gameState.isWin() or gameState.isLose() or depth ==0:
+            return None,self.evaluationFunction(gameState)
 
-      for action in gameState.getLegalActions(ghost):
-        if ghost == gameState.getNumAgents()-1:
-            v = self.maximizer(gameState.generateSuccessor(ghost,action), depth - 1)
-        else:
-            v = self.minimizer(gameState.generateSuccessor(ghost,action), depth, ghost + 1)
-        if v < value:
-            best = action 
-            value = v
-      return best, value
+        #Our initial worst  worst minimum value is infinity or a really big value
+        value = 100000000
+
+      # For each action available in our list of legal action of our current state
+      # We will compare each ghosts and return the minimum of them 
+      # When there are NO more ghosts then we maximize the pacman
+      
+        for action in gameState.getLegalActions(ghost):
+          if ghost == gameState.getNumAgents()-1:
+            a, v = self.maximizer(gameState.generateSuccessor(ghost, action), depth - 1)
+          else:
+            a, v = self.minimizer(gameState.generateSuccessor(ghost, action), depth, ghost + 1)
+          if v < value:
+              baction = action
+              value = v
+        return baction, value
+
+
 
 
 class AlphaBetaAgent(MultiAgentSearchAgent):
@@ -196,55 +213,65 @@ class AlphaBetaAgent(MultiAgentSearchAgent):
     """
 
     def getAction(self, gameState):
+  
+
         """
           Returns the minimax action using self.depth and self.evaluationFunction
         """
-      action, value = self.maximizer(gameState, self.depth, -(float("inf")), float("inf"))
+        
+        action,value = self.maximizer(gameState, self.depth, -100000000, 100000000)
 
-      return action
-
-
+        return action
+   
     def maximizer(self,gameState,depth, alpha, betha):
 
-      # Either if we have won, lost, then we return the score 
-      if gameState.isWin() or gameState.isLose():
-        return self.evaluationFunction(gameState)
+      # Either if we have won, lost, then we return the score, or we are in the very beggining
+        if gameState.isWin() or gameState.isLose() or depth==0:
+          return None, self.evaluationFunction(gameState)
 
-      #Our initial worst  worst maximum value is -infinity
-      value = -float("inf")
+      #Our initial worst  worst maximum value is -infinity or a really small value
+        value = -100000000
 
-      for action in gameState.getLegalActions(0):
-          v = self.minimizer(gameState.generateSuccessor(0,action), depth, 1, alpha, betha)
+
+        for action in gameState.getLegalActions(0):
+          a,v = self.minimizer(gameState.generateSuccessor(0,action), depth, 1, alpha, betha)
           if v > value:
-              value = v
-              best = action
+            baction = action
+            value = v     
+          # If our actual value is greater than betha, then you are winning, so break 
           if value > betha:
-              break
+            break
+          #Then we choose the maximum value between out existent alpha and our value
           alpha = max(alpha, value)
-      return best, value 
+        return baction, value 
+      
 
     def minimizer(self, gameState, depth, ghost, alpha, betha):
+      
 
       # Either if we have won, lost, then we return the score 
-      if gameState.isWin() or gameState.isLose():
-        return self.evaluationFunction(gameState)
+        if gameState.isWin() or gameState.isLose() or depth==0:
+          return None, self.evaluationFunction(gameState)
 
-      #Our initial worst  worst minimum value is +infinity
-      value = float("inf")
+      #Our initial worst  worst minimum value is +infinity, or a really big value
+        value = 100000000
 
-      for action in gameState.getLegalActions(ghost):
-        if ghost == gameState.getNumAgents()-1:
-            v = self.maximizer(gameState.generateSuccessor(ghost,action), depth - 1, alpha, betha)
-        else:
-            v = self.minimizer(gameState.generateSuccessor(ghost,action), depth, ghost + 1, alpha, betha)
-        if v < value:
-            best = action 
-            value = v
-        if value < alpha:
-            break
-        betha = min(betha, value)
+        for action in gameState.getLegalActions(ghost):
+          if ghost == gameState.getNumAgents()-1:
+              a,v = self.maximizer(gameState.generateSuccessor(ghost,action), depth - 1, alpha, betha)
+          else:
+              a,v = self.minimizer(gameState.generateSuccessor(ghost,action), depth, ghost + 1, alpha, betha)
+          if v < value:
+              baction = action 
+              value = v
+        #If our actual value is smaller that alpha, then 
+          if value < alpha:
+              break
+        #Then we choose the minimum value from the current betha and our value
+          betha = min(betha, value)
+        return baction, value
+        
 
-      return best, value
 
 class ExpectimaxAgent(MultiAgentSearchAgent):
     """
